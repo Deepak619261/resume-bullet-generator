@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Bullet Point Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>✨ AI Resume Bullet Point Generator</h1>
+            <p>Transform your role and skills into professional achievement-focused bullet points</p>
+        </header>
+
+        <div class="card">
+            <form id="resumeForm">
+                <div class="form-group">
+                    <label for="apiKey">OpenAI API Key 🔑</label>
+                    <input 
+                        type="password" 
+                        id="apiKey" 
+                        placeholder="sk-..."
+                        required
+                    >
+                    <small class="help-text">Your API key is never stored. Get it from <a href="https://platform.openai.com/account/api-keys" target="_blank">OpenAI Platform</a></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Job Role</label>
+                    <input 
+                        type="text" 
+                        id="role" 
+                        placeholder="e.g., Software Developer, Marketing Manager, Data Analyst"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="skills">Skills (comma-separated)</label>
+                    <input 
+                        type="text" 
+                        id="skills" 
+                        placeholder="e.g., React, REST APIs, PostgreSQL"
+                        required
+                    >
+                </div>
+
+                <button type="submit" id="generateBtn" class="btn-primary">
+                    <span class="btn-text">Generate Bullet Points</span>
+                    <span class="loader hidden"></span>
+                </button>
+            </form>
+        </div>
+
+        <div id="outputSection" class="card output-section hidden">
+            <div class="output-header">
+                <h2>Your Resume Bullet Points</h2>
+                <button id="copyBtn" class="btn-secondary">
+                    <span id="copyIcon">📋</span> Copy to Clipboard
+                </button>
+            </div>
+            <div id="output" class="output-content"></div>
+        </div>
+
+        <div id="errorSection" class="error-section hidden">
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
