@@ -109,15 +109,15 @@ function decryptApiKey(encryptedData, sessionId) {
 }
 
 // Validate OpenAI API key format
-function validateApiKey(apiKey) {
-  if (!apiKey || typeof apiKey !== 'string') {
-    return false;
-  }
+// function validateApiKey(apiKey) {
+//   if (!apiKey || typeof apiKey !== 'string') {
+//     return false;
+//   }
   
-  // OpenAI keys start with sk- and are at least 40 chars
-  const apiKeyPattern = /^sk-[a-zA-Z0-9]{32,}$/;
-  return apiKeyPattern.test(apiKey);
-}
+//   // OpenAI keys start with sk- and are at least 40 chars
+//   const apiKeyPattern = /^sk-[a-zA-Z0-9]{32,}$/;
+//   return apiKeyPattern.test(apiKey);
+// }
 
 // Input validation function
 function validateInput(role, skills) {
@@ -169,9 +169,9 @@ app.post('/api/secure-key', userKeyLimiter, async (req, res) => {
     }
     
     // Validate key format
-    if (!validateApiKey(apiKey)) {
-      return res.status(400).json({ error: 'Invalid API key format' });
-    }
+    // if (!validateApiKey(apiKey)) {
+    //   return res.status(400).json({ error: 'Invalid API key format' });
+    // }
     
     // Generate session ID
     const sessionId = crypto.randomBytes(32).toString('hex');
