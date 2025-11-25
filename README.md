@@ -5,7 +5,8 @@ A modern web application that uses OpenAI's GPT models to transform your job rol
 ## ✨ Features
 
 - 🤖 AI-powered bullet point generation using OpenAI GPT
-- 🔒 Secure - your API key is never stored
+- 🔒 Secure - API key stored server-side only
+- 🛡️ Rate limiting and input validation for abuse prevention
 - 📋 One-click copy to clipboard
 - 💅 Beautiful, responsive UI
 - ⚡ Fast and easy to use
@@ -30,23 +31,36 @@ cd AI-Resume-bullet-points-generator-
 npm install
 ```
 
-3. Start the server:
+3. Create a `.env` file in the root directory:
+```bash
+OPENAI_API_KEY=your-openai-api-key-here
+PORT=3000
+```
+
+4. Start the server:
 ```bash
 npm start
 ```
 
-4. Open your browser and navigate to:
+5. Open your browser and navigate to:
 ```
 http://localhost:3000
 ```
 
 ## 📖 How to Use
 
-1. **Enter your OpenAI API Key** - Get it from [OpenAI Platform](https://platform.openai.com/account/api-keys)
-2. **Enter your Job Role** - e.g., Software Developer, Marketing Manager
-3. **Enter your Skills** - e.g., React, Node.js, PostgreSQL
-4. **Click Generate** - AI will create professional bullet points
-5. **Copy to Clipboard** - Use them in your resume!
+1. **Enter your Job Role** - e.g., Software Developer, Marketing Manager
+2. **Enter your Skills** - e.g., React, Node.js, PostgreSQL
+3. **Click Generate** - AI will create professional bullet points
+4. **Copy to Clipboard** - Use them in your resume!
+
+## 🔒 Security Features
+
+- **Server-side API key management** - OpenAI API key is stored securely in environment variables, never exposed to clients
+- **Rate limiting** - 10 requests per 15 minutes per IP to prevent abuse
+- **Input validation** - Maximum 200 characters per field with sanitization
+- **Payload size limits** - 10KB max request size
+- **Error handling** - Internal errors never expose sensitive information to clients
 
 ## 🛠️ Tech Stack
 

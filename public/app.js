@@ -50,19 +50,18 @@ Your job is to convert the user's role and skills into resume-ready achievement 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const apiKey = document.getElementById('apiKey').value.trim();
     const role = document.getElementById('role').value.trim();
     const skills = document.getElementById('skills').value.trim();
     
-    if (!apiKey || !role || !skills) {
+    if (!role || !skills) {
         showError('Please fill in all fields');
         return;
     }
     
-    await generateBulletPoints(apiKey, role, skills);
+    await generateBulletPoints(role, skills);
 });
 
-async function generateBulletPoints(apiKey, role, skills) {
+async function generateBulletPoints(role, skills) {
     // Show loading state
     generateBtn.disabled = true;
     btnText.classList.add('hidden');
@@ -77,7 +76,6 @@ async function generateBulletPoints(apiKey, role, skills) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                apiKey,
                 role,
                 skills,
                 developerPrompt: DEVELOPER_PROMPT
