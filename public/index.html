@@ -14,6 +14,30 @@
         </header>
 
         <div class="card">
+            <div class="api-key-section">
+                <div class="toggle-section">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="useOwnKey" class="toggle-checkbox">
+                        <span class="toggle-text">Use my own OpenAI API key</span>
+                    </label>
+                    <small class="help-text">Optional: Provide your own key for unlimited usage</small>
+                </div>
+                
+                <div id="apiKeyInput" class="form-group hidden">
+                    <label for="apiKey">OpenAI API Key 🔒</label>
+                    <input 
+                        type="password" 
+                        id="apiKey" 
+                        placeholder="sk-..."
+                        autocomplete="off"
+                    >
+                    <small class="help-text">
+                        🔐 <strong>Secure:</strong> Encrypted end-to-end, never logged or stored. 
+                        <a href="https://platform.openai.com/account/api-keys" target="_blank">Get your key</a>
+                    </small>
+                </div>
+            </div>
+
             <form id="resumeForm">
                 <div class="form-group">
                     <label for="role">Job Role</label>

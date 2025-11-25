@@ -8,6 +8,24 @@ const errorSection = document.getElementById('errorSection');
 const errorMessage = document.getElementById('errorMessage');
 const copyBtn = document.getElementById('copyBtn');
 const copyIcon = document.getElementById('copyIcon');
+const useOwnKeyCheckbox = document.getElementById('useOwnKey');
+const apiKeyInput = document.getElementById('apiKeyInput');
+const apiKeyField = document.getElementById('apiKey');
+
+let currentSessionId = null;
+
+// Toggle API key input visibility
+useOwnKeyCheckbox.addEventListener('change', (e) => {
+    if (e.target.checked) {
+        apiKeyInput.classList.remove('hidden');
+        apiKeyField.required = true;
+    } else {
+        apiKeyInput.classList.add('hidden');
+        apiKeyField.required = false;
+        apiKeyField.value = '';
+        currentSessionId = null;
+    }
+});
 
 const DEVELOPER_PROMPT = `# Identity
 You are a professional resume bullet point generator integrated inside a web application. 
@@ -52,16 +70,23 @@ form.addEventListener('submit', async (e) => {
     
     const role = document.getElementById('role').value.trim();
     const skills = document.getElementById('skills').value.trim();
+    const useOwnKey = useOwnKeyCheckbox.checked;
+    const apiKey = apiKeyField.value.trim();
     
     if (!role || !skills) {
-        showError('Please fill in all fields');
+        showError('Please fill in all required fields');
         return;
     }
     
-    await generateBulletPoints(role, skills);
+    if (useOwnKey && !apiKey) {
+        showError('Please provide your API key or uncheck the option');
+        return;
+    }
+    
+    await generateBulletPoints(role, skills, useOwnKey ? apiKey : null);
 });
 
-async function generateBulletPoints(role, skills) {
+async function generateBulletPoints(role, skills, apiKey = null) {
     // Show loading state
     generateBtn.disabled = true;
     btnText.classList.add('hidden');
@@ -70,6 +95,30 @@ async function generateBulletPoints(role, skills) {
     outputSection.classList.add('hidden');
     
     try {
+        // If user provided their own key, securely transmit it first
+        if (apiKey) {
+            const keyResponse = await fetch('/api/secure-key', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ apiKey })
+            });
+            
+            if (!keyResponse.ok) {
+                const error = await keyResponse.json();
+                throw new Error(error.error || 'Invalid API key');
+            }
+            
+            const { sessionId } = await keyResponse.json();
+            currentSessionId = sessionId;
+            
+            // Clear the API key from memory immediately
+            apiKey = null;
+            apiKeyField.value = '';
+        }
+        
+        // Generate bullet points
         const response = await fetch('/api/generate', {
             method: 'POST',
             headers: {
@@ -78,12 +127,21 @@ async function generateBulletPoints(role, skills) {
             body: JSON.stringify({
                 role,
                 skills,
-                developerPrompt: DEVELOPER_PROMPT
+                developerPrompt: DEVELOPER_PROMPT,
+                sessionId: currentSessionId
             })
         });
         
         if (!response.ok) {
             const error = await response.json();
+            
+            // If session expired, prompt for key again
+            if (error.error && error.error.includes('Session expired')) {
+                currentSessionId = null;
+                useOwnKeyCheckbox.checked = false;
+                apiKeyInput.classList.add('hidden');
+            }
+            
             throw new Error(error.error || 'Failed to generate bullet points');
         }
         
@@ -93,8 +151,12 @@ async function generateBulletPoints(role, skills) {
         output.textContent = data.bulletPoints;
         outputSection.classList.remove('hidden');
         
+        // Clear session after successful use
+        currentSessionId = null;
+        
     } catch (error) {
         showError(error.message);
+        currentSessionId = null;
     } finally {
         // Reset button state
         generateBtn.disabled = false;
